@@ -532,7 +532,7 @@ end
 ## read the command line arguments
 def read_argv
 	Dotenv.load
-	@logger.info(ENV)
+	@logger.debug(ENV)
 
 	@canvasToken=ENV['CANVAS_TOKEN']
 	@canvasUrl=ENV['CANVAS_URL']
