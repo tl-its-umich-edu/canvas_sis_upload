@@ -1,11 +1,17 @@
 # This file mostly used for local testing and development.
-FROM ruby:2.7-slim
+FROM ruby:2.7-slim-bullseye
 ENV app /usr/src/app
 RUN mkdir $app
 WORKDIR $app
 
+# Point Debian Bullseye to archive repositories and bypass expiration checks
+RUN echo "deb http://archive.debian.org/debian bullseye main" > /etc/apt/sources.list && \
+    echo "deb http://archive.debian.org/debian-security bullseye-security main" >> /etc/apt/sources.list && \
+    echo "Acquire::Check-Valid-Until \"false\";" > /etc/apt/apt.conf.d/90ignore-release-date
+
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends build-essential curl
+    apt-get install -y --no-install-recommends build-essential curl ca-certificates && \
+    update-ca-certificates
 
 # Rclone in Debian isn't the latest
 # Download latest from https://rclone.org/downloads/
