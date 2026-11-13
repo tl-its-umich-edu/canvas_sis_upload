@@ -1,11 +1,16 @@
 # This file mostly used for local testing and development.
-FROM ruby:2.7-slim
+FROM ruby:3.2-slim-bookworm
 ENV app /usr/src/app
 RUN mkdir $app
 WORKDIR $app
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends build-essential curl
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        curl \
+        ca-certificates && \
+    update-ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
 # Rclone in Debian isn't the latest
 # Download latest from https://rclone.org/downloads/
@@ -34,7 +39,5 @@ RUN find . | grep ".rb$" | xargs ruby -c
 RUN mkdir /usr/src/app/data
 RUN chown -R root:root /usr/src/app/data
 RUN chmod g+rw /usr/src/app/data
-
-ENV PROCESS=sis_set_url
 
 ENTRYPOINT [ "./rclone_setup.sh" ]
